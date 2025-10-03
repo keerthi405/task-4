@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>To-Do App</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #1e1e2f;
+      color: #fff;
+      padding: 20px;
+      display: flex;
+      justify-content: center;
+    }
+    .container {
+      max-width: 400px;
+      width: 100%;
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 10px;
+    }
+    .task-input {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    input, button {
+      padding: 10px;
+      border: none;
+      border-radius: 5px;
+      font-size: 16px;
+    }
+    input[type="text"], input[type="datetime-local"] {
+      width: 100%;
+    }
+    button {
+      background-color: #4caf50;
+      color: white;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #45a049;
+    }
+    #taskCount {
+      text-align: center;
+      margin-bottom: 10px;
+      font-size: 16px;
+      color: #ccc;
+    }
+    .task-list {
+      list-style: none;
+      padding: 0;
+    }
+    .task {
+      background: #2e2e3f;
+      margin-bottom: 10px;
+      padding: 10px;
+      border-radius: 5px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .completed {
+      text-decoration: line-through;
+      opacity: 0.6;
+    }
+    .task button {
+      margin-left: 5px;
+      background-color: #555;
+    }
+    .task button:hover {
+      background-color: #777;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>📝 To-Do App</h1> <br> <br>
+    <div class="task-input">
+      <input type="text" id="taskText" placeholder="Enter task..." /> <br>
+      <input type="datetime-local" id="taskDate" /> <br>
+      <button onclick="addTask()">Add Task</button>
+    </div>
+    <p id="taskCount">No tasks yet</p>
+    <ul class="task-list" id="taskList"></ul>
+  </div>
+
+  <script>
+    function updateTaskCount() {
+      const tasks = document.querySelectorAll('.task');
+      const countDisplay = document.getElementById('taskCount');
+      if (tasks.length === 0) {
+        countDisplay.textContent = 'No tasks yet';
+      } else {
+        countDisplay.textContent = `Total tasks: ${tasks.length}`;
+      }
+    }
+
+    function addTask() {
+      const text = document.getElementById('taskText').value.trim();
+      const date = document.getElementById('taskDate').value;
+      if (!text) return;
+
+      const li = document.createElement('li');
+      li.className = 'task';
+      li.innerHTML = `
+        <span>${text} <small>(${date || 'No date'})</small></span>
+        <div>
+          <button onclick="editTask(this)">Edit</button>
+          <button onclick="completeTask(this)">Complete</button>
+          <button onclick="deleteTask(this)">Delete</button>
+        </div>
+      `;
+      document.getElementById('taskList').appendChild(li);
+      document.getElementById('taskText').value = '';
+      document.getElementById('taskDate').value = '';
+      updateTaskCount();
+    }
+
+    function editTask(btn) {
+      const task = btn.parentElement.parentElement;
+      const currentText = task.querySelector('span').innerText.split(' (')[0];
+      const newText = prompt('Edit task:', currentText);
+      if (newText !== null) {
+        const newDate = prompt('Edit date (YYYY-MM-DD HH:MM):', '');
+        task.querySelector('span').innerHTML = `${newText} <small>(${newDate || 'No date'})</small>`;
+      }
+    }
+
+    function completeTask(btn) {
+      const task = btn.parentElement.parentElement;
+      task.classList.toggle('completed');
+    }
+
+    function deleteTask(btn) {
+      const task = btn.parentElement.parentElement;
+      task.remove();
+      updateTaskCount();
+    }
+  </script>
+</body>
+</html>
